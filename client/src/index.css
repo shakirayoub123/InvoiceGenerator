@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+
+  --color-mir-blue: #1863dc;
+  --color-mir-blue-dark: #0f4baf;
+  --color-mir-dark: #010049;
+  --color-mir-darker: #000030;
+  --color-mir-light: #f8fafc;
+  --color-mir-accent: #65C1E5;
+  --color-mir-accent-hover: #4ea8cd;
+
+  --animate-fade-in: fadeIn 0.4s ease-out;
+  --animate-slide-up: slideUp 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body {
+  background-color: var(--color-mir-light);
+  color: #1e293b;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar for Enterprise Feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Form focus rings */
+input,
+textarea {
+  transition: all 0.2s ease;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(24, 99, 220, 0.15);
+  border-color: var(--color-mir-blue) !important;
+}
+
+@media print {
+  @page {
+    margin: 0cm;
+    size: a4 portrait;
+  }
+
+  /* HIDE EVERYTHING GLOBALLY BY DEFAULT */
+  body * {
+    visibility: hidden;
+  }
+
+  body,
+  html {
+    background-color: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #root,
+  .hide-on-print-wrapper,
+  main {
+    height: auto !important;
+    min-height: 0 !important;
+    display: block !important;
+    position: static !important;
+    overflow: visible !important;
+  }
+
+  /* ONLY REVEAL THE INVOICE PREVIEW CONTAINER AND ITS CHILDREN */
+  #invoice-preview,
+  #print-template-wrapper,
+  #invoice-preview *,
+  #print-template-wrapper * {
+    visibility: visible;
+  }
+
+  /* FORCE THE INVOICE TO THE ABSOLUTE TOP LEFT OF THE PAGE */
+  #invoice-preview,
+  #print-template-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10mm 15mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}
