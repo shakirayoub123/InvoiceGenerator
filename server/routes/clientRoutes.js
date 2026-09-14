@@ -30,7 +30,54 @@ router.get('/', async (req, res) => {
 // Update client (or update a referral status)
 router.put('/:id', async (req, res) => {
     try {
-        const client = await Client.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const clientId = req.params.id;
+        const originalClient = await Client.findById(clientId);
+
+        let statusChangedNotification = null;
+
+        // Detect if a status changed
+        if (req.body.referrals && originalClient && originalClient.referrals) {
+            req.body.referrals.forEach(incomingRef => {
+                const originalRef = originalClient.referrals.find(r => r._id.toString() === incomingRef._id?.toString());
+                if (originalRef && originalRef.status !== incomingRef.status) {
+                    statusChangedNotification = {
+                        myEmail: originalClient.email,
+                        myName: originalClient.name,
+                        leadName: incomingRef.leadName,
+                        newStatus: incomingRef.status
+                    };
+                }
+            });
+        }
+
+        const client = await Client.findByIdAndUpdate(clientId, req.body, { new: true });
+
+        // Send email to referrer if status changed
+        if (statusChangedNotification) {
+            const mailOptions = {
+                from: 'Mir Web Solutions <Miritsolutions@gmail.com>',
+                to: statusChangedNotification.myEmail,
+                subject: `Referral Update: ${statusChangedNotification.leadName}`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 10px;">
+                        <h2 style="color: #1e293b;">Referral Status Updated</h2>
+                        <p style="color: #64748b; font-size: 16px;">Hello ${statusChangedNotification.myName},</p>
+                        <p style="color: #334155; margin-top: 20px;">The status for your referral <strong>${statusChangedNotification.leadName}</strong> has been updated to:</p>
+                        <div style="margin: 20px auto; padding: 12px 24px; background-color: #f1f5f9; border-radius: 8px; display: inline-block;">
+                            <span style="font-weight: bold; color: #2563eb; font-size: 18px;">${statusChangedNotification.newStatus}</span>
+                        </div>
+                        <p style="color: #64748b; font-size: 14px; margin-top: 30px;">Thank you for partnering with Mir Web Solutions!</p>
+                    </div>
+                `
+            };
+            try {
+                await transporter.sendMail(mailOptions);
+                console.log(`[EMAIL] Status update sent to ${statusChangedNotification.myEmail}`);
+            } catch (err) {
+                console.error('[EMAIL ERROR] Failed to send status update notification:', err.message);
+            }
+        }
+
         res.json(client);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -88,7 +135,8 @@ router.post('/refer', async (req, res) => {
         try {
             const mailOptions = {
                 from: 'Mir Web Solutions <Miritsolutions@gmail.com>',
-                to: 'admin@miritsolutions.com', // Sending to admin
+                to: 'admin@miritsolutions.com, Miritsolutions@gmail.com, hello@mirwebsolutions.com', // Sending to all admins
+
                 subject: `New Enterprise Referral: ${leadName}`,
                 html: `
                     <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 10px;">

@@ -3,8 +3,8 @@ import { Plus, X, Trash2, Printer, Save, Eye, EyeOff, Settings2, Palette } from 
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import InvoicePrintTemplate from './InvoicePrintTemplate';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import InvoiceReactPDFTemplate from './InvoiceReactPDFTemplate';
+import { pdf } from '@react-pdf/renderer';
 
 const InvoiceGenerator = () => {
     const fileInputRef = useRef(null);
@@ -116,35 +116,28 @@ const InvoiceGenerator = () => {
         );
     };
 
-    const generatePDF = () => {
-        setIsPreviewMode(true);
-        const loadingToast = toast.loading('Generating PDF...');
-        setTimeout(async () => {
-            const input = document.getElementById('pdf-capture-engine');
-            if (input) {
-                try {
-                    const canvas = await html2canvas(input, { scale: 2, useCORS: true });
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF({
-                        orientation: 'portrait',
-                        unit: 'mm',
-                        format: 'a4'
-                    });
+    const generatePDF = async () => {
+        const loadingToast = toast.loading('Generating real PDF...');
+        try {
+            const templateTheme = templates.find(t => t._id === selectedTemplateId) || { color: '#4b4b4b' };
+            const blob = await pdf(
+                <InvoiceReactPDFTemplate invoice={invoice} currency={currency} templateTheme={templateTheme} />
+            ).toBlob();
 
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Invoice_${invoice.invoiceNumber}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
 
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, Math.min(pdfHeight, 297));
-                    pdf.save(`Invoice_${invoice.invoiceNumber}.pdf`);
-                    toast.success('Invoice downloaded successfully!', { id: loadingToast });
-                } catch (error) {
-                    console.error('Error generating PDF:', error);
-                    toast.error(`Failed to generate PDF: ${error.message || JSON.stringify(error) || 'Unknown error'}`, { id: loadingToast, duration: 6000 });
-                }
-            } else {
-                toast.error('Preview container not found.', { id: loadingToast });
-            }
-        }, 400); // 400ms delay to ensure the DOM is fully rendered before grabbing
+            toast.success('Native PDF downloaded successfully!', { id: loadingToast });
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            toast.error(`Failed to generate PDF: ${error.message || JSON.stringify(error)}`, { id: loadingToast, duration: 6000 });
+        }
     };
 
     const togglePreview = () => setIsPreviewMode(!isPreviewMode);

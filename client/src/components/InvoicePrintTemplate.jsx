@@ -66,22 +66,22 @@ const InvoicePrintTemplate = ({ invoice, currency, templateTheme }) => {
 
             {/* Line Items Table */}
             <div className="w-full mb-12">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse" style={{ tableLayout: 'fixed' }}>
                     <thead>
-                        <tr className="text-[#ffffff]" style={{ backgroundColor: templateTheme && templateTheme.color ? templateTheme.color : '#4b4b4b' }}>
-                            <th className="py-2 px-4 font-normal text-[13px] w-[55%] rounded-l-sm">Item</th>
-                            <th className="py-2 px-4 font-normal text-[13px] text-left w-[15%]">Quantity</th>
-                            <th className="py-2 px-4 font-normal text-[13px] text-right w-[15%]">Rate</th>
-                            <th className="py-2 px-4 font-normal text-[13px] text-right w-[15%] rounded-r-sm">Amount</th>
+                        <tr className="text-[#ffffff]" style={{ backgroundColor: templateTheme && templateTheme.color ? templateTheme.color : '#4b4b4b', height: '40px' }}>
+                            <th className="font-normal text-[13px] rounded-l-sm" style={{ width: '55%', paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px', textAlign: 'left', verticalAlign: 'middle' }}>Item</th>
+                            <th className="font-normal text-[13px]" style={{ width: '15%', paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px', textAlign: 'left', verticalAlign: 'middle' }}>Quantity</th>
+                            <th className="font-normal text-[13px]" style={{ width: '15%', paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px', textAlign: 'right', verticalAlign: 'middle' }}>Rate</th>
+                            <th className="font-normal text-[13px] rounded-r-sm" style={{ width: '15%', paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px', textAlign: 'right', verticalAlign: 'middle' }}>Amount</th>
                         </tr>
                     </thead>
                     <tbody>
                         {invoice.items.map((item, index) => (
                             <tr key={index}>
-                                <td className="py-4 px-4 text-[13px] font-bold text-[#333333] whitespace-pre-wrap align-top">{item.description}</td>
-                                <td className="py-4 px-4 text-[13px] text-[#555555] text-left align-top">{item.quantity}</td>
-                                <td className="py-4 px-4 text-[13px] text-[#555555] text-right align-top">{currency}{parseFloat(item.rate).toFixed(2)}</td>
-                                <td className="py-4 px-4 text-[13px] text-[#555555] text-right align-top">{currency}{item.amount.toFixed(2)}</td>
+                                <td className="text-[13px] font-bold text-[#333333] whitespace-pre-wrap" style={{ paddingTop: '16px', paddingBottom: '16px', paddingLeft: '16px', paddingRight: '16px', verticalAlign: 'top', textAlign: 'left' }}>{item.description}</td>
+                                <td className="text-[13px] text-[#555555]" style={{ paddingTop: '16px', paddingBottom: '16px', paddingLeft: '16px', paddingRight: '16px', verticalAlign: 'top', textAlign: 'left' }}>{item.quantity}</td>
+                                <td className="text-[13px] text-[#555555]" style={{ paddingTop: '16px', paddingBottom: '16px', paddingLeft: '16px', paddingRight: '16px', verticalAlign: 'top', textAlign: 'right' }}>{currency}{parseFloat(item.rate).toFixed(2)}</td>
+                                <td className="text-[13px] text-[#555555]" style={{ paddingTop: '16px', paddingBottom: '16px', paddingLeft: '16px', paddingRight: '16px', verticalAlign: 'top', textAlign: 'right' }}>{currency}{item.amount.toFixed(2)}</td>
                             </tr>
                         ))}
                     </tbody>

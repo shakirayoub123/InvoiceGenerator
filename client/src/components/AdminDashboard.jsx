@@ -62,7 +62,9 @@ const AdminDashboard = () => {
 
     // --- CRM METRICS ---
     const totalClients = clients.length;
-    const allLeads = clients.flatMap(c => c.referrals);
+    const allLeads = clients.flatMap(c =>
+        c.referrals.map(r => ({ ...r, referrerName: c.name }))
+    );
     const convertedLeads = allLeads.filter(l => l.status === 'Converted');
     const newLeads = allLeads.filter(l => l.status === 'New');
 
@@ -379,7 +381,7 @@ const AdminDashboard = () => {
                                                 <tr key={idx} className={`border-b border-slate-50 hover:bg-slate-50/50 transition-colors ${idx === 4 ? 'border-none' : ''}`}>
                                                     <td className="py-4 px-4">
                                                         <div className="text-sm font-bold text-slate-800">{lead.leadName}</div>
-                                                        <div className="text-[11px] font-semibold text-slate-400 mt-0.5">{format(new Date(lead.dateReferred), 'dd MMM yyyy')}</div>
+                                                        <div className="text-[11px] font-semibold text-slate-400 mt-0.5">{format(new Date(lead.dateReferred || Date.now()), 'dd MMM yyyy')}</div>
                                                     </td>
                                                     <td className="py-4 px-4 text-sm font-semibold text-slate-600">
                                                         {lead.referrerName}
