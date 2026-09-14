@@ -8,12 +8,15 @@ const otpStore = new Map();
 // Configure Nodemailer with the detailed Gmail SMTP settings
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.SMTP_EMAIL || 'Miritsolutions@gmail.com',
         pass: process.env.SMTP_PASSWORD || 'rllkbysqrzoyowiz'
     },
+    connectionTimeout: 10000,
+    greetingTimeout: 5000,
+    socketTimeout: 10000,
     tls: {
         rejectUnauthorized: false // Helps avoid some local development errors
     }
