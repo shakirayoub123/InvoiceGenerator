@@ -26,24 +26,14 @@ app.use('/api/clients', clientRoutes);
 const connectDB = async () => {
     let mongoUri = process.env.MONGODB_URI || 'mongodb+srv://miritsolutions_db_user:0LSgKuSGcvNhTHl9@cluster0.bpncrzz.mongodb.net/InvoiceGenerator?retryWrites=true&w=majority&appName=Cluster0';
 
-    if (mongoUri) {
-        try {
-            console.log('Attempting to connect to Cloud Data source...');
-            await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
-            console.log(`Successfully connected to Cloud MongoDB at ${mongoUri}`);
-            return;
-        } catch (err) {
-            console.error('Cloud Connection Failed (Likely blocked by ISP/Firewall).', err.message);
-            console.log('Automatically falling back to fast Local Memory Database to prevent freezing...');
-        }
-    } else {
-        console.log('No MONGODB_URI found, starting Local Memory Database...');
+    try {
+        console.log('Attempting to connect to Cloud Data source...');
+        await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+        console.log(`Successfully connected to Cloud MongoDB at ${mongoUri}`);
+    } catch (err) {
+        console.error('Cloud Connection Failed. PLEASE ENSURE 0.0.0.0/0 IS WHITELISTED IN MONGODB ATLAS NETWORK ACCESS.', err.message);
+        // Do not crash the server completely, but do not download MongoMemoryServer either!
     }
-
-    const mongoServer = await MongoMemoryServer.create();
-    const fallbackUri = mongoServer.getUri();
-    await mongoose.connect(fallbackUri);
-    console.log(`Connected to fallback Local MongoDB at ${fallbackUri}`);
 };
 
 connectDB();
