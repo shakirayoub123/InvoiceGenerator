@@ -125,14 +125,16 @@ const SubmitReferral = () => {
                     <p className="text-lg md:text-xl font-medium leading-relaxed mb-9 max-w-lg text-slate-500">
                         Submit a referral in under two minutes. No account, no waiting on a callback — just tell us who to talk to and why, and our team follows up directly.
                     </p>
-                    <div className="flex items-center gap-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-2">
                         <button
                             onClick={scrollToForm}
                             className="bg-blue-600 text-white font-bold py-3.5 px-8 rounded-full shadow-[0_8px_20px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-all transform hover:-translate-y-0.5"
                         >
                             Submit a referral
                         </button>
-                        <span className="text-sm font-semibold text-slate-400">No sign-up required</span>
+                        <a href="https://calendly.com/mirwebsolutions/coffeechat" target="_blank" rel="noopener noreferrer" className="bg-white text-slate-700 font-bold py-3.5 px-8 rounded-full border border-slate-200 shadow-sm hover:border-blue-600 hover:text-blue-600 transition-all transform hover:-translate-y-0.5">
+                            Book a Call
+                        </a>
                     </div>
                 </div>
                 <div className="flex justify-center lg:justify-end">
@@ -177,7 +179,7 @@ const SubmitReferral = () => {
                                 <div className="pb-4 mb-8 border-b border-slate-100 flex items-center gap-3">
                                     <span className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-sm font-black">1</span>
                                     <div>
-                                        <h3 className="text-lg font-bold text-slate-900 tracking-tight">Your details</h3>
+                                        <h3 className="text-lg font-bold text-slate-900 tracking-tight">Refered By</h3>
                                         <p className="text-sm font-medium text-slate-500 mt-0.5">So we know who to credit and follow up with.</p>
                                     </div>
                                 </div>
@@ -188,11 +190,14 @@ const SubmitReferral = () => {
                                     <Field label="Email address">
                                         <input required type="email" name="myEmail" value={formData.myEmail} onChange={handleChange} className={inputClass} placeholder="e.g. john@company.com" />
                                     </Field>
-                                    <Field label="Phone number" optional>
+                                    <Field label="WhatsApp number" optional>
                                         <input type="text" name="myPhone" value={formData.myPhone} onChange={handleChange} className={inputClass} placeholder="+1..." />
                                     </Field>
                                     <Field label="Company / organization" optional>
                                         <input type="text" name="myCompany" value={formData.myCompany} onChange={handleChange} className={inputClass} placeholder="Acme Inc." />
+                                    </Field>
+                                    <Field label="Linked URL (Website / LinkedIn)" optional full>
+                                        <input type="url" name="myUrl" value={formData.myUrl} onChange={handleChange} className={inputClass} placeholder="https://..." />
                                     </Field>
                                 </div>
                             </div>
@@ -213,8 +218,11 @@ const SubmitReferral = () => {
                                     <Field label="Lead email contact" optional>
                                         <input type="email" name="leadEmail" value={formData.leadEmail} onChange={handleChange} className={inputClass} placeholder="contact@prospect.com" />
                                     </Field>
-                                    <Field label="Lead phone number" optional>
+                                    <Field label="Lead WhatsApp number" optional>
                                         <input type="text" name="leadPhone" value={formData.leadPhone} onChange={handleChange} className={inputClass} placeholder="+1..." />
+                                    </Field>
+                                    <Field label="Lead Linked URL (Website / LinkedIn)" optional>
+                                        <input type="url" name="leadUrl" value={formData.leadUrl} onChange={handleChange} className={inputClass} placeholder="https://..." />
                                     </Field>
                                     <Field label="Additional context" full>
                                         <textarea name="notes" value={formData.notes} onChange={handleChange} rows="4" className={inputClass + ' resize-none'} placeholder="What do they need? Any timing or budget context helps." />

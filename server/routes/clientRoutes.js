@@ -50,7 +50,7 @@ router.delete('/:id', async (req, res) => {
 // Public Referral Submission
 router.post('/refer', async (req, res) => {
     try {
-        const { myName, myEmail, myPhone, myCompany, leadName, leadEmail, leadPhone, notes } = req.body;
+        const { myName, myEmail, myPhone, myCompany, myUrl, leadName, leadEmail, leadPhone, leadUrl, notes } = req.body;
 
         if (!myEmail || !leadName) {
             return res.status(400).json({ message: 'Your email and Lead name are required.' });
@@ -64,8 +64,12 @@ router.post('/refer', async (req, res) => {
                 name: myName,
                 email: myEmail.toLowerCase(),
                 phone: myPhone,
-                company: myCompany
+                company: myCompany,
+                url: myUrl
             });
+        } else {
+            // Update URL if the client already exists but didn't have one
+            if (myUrl && !client.url) client.url = myUrl;
         }
 
         // Add the referral
@@ -73,6 +77,7 @@ router.post('/refer', async (req, res) => {
             leadName,
             leadEmail,
             leadPhone,
+            leadUrl,
             notes,
             status: 'New'
         });
@@ -94,15 +99,17 @@ router.post('/refer', async (req, res) => {
                             <h3 style="color: #2563eb; margin-top: 0;">Referrer Details (Partner)</h3>
                             <p style="color: #334155; margin: 5px 0;"><strong>Name:</strong> ${myName}</p>
                             <p style="color: #334155; margin: 5px 0;"><strong>Email:</strong> ${myEmail}</p>
-                            <p style="color: #334155; margin: 5px 0;"><strong>Phone:</strong> ${myPhone || 'N/A'}</p>
+                            <p style="color: #334155; margin: 5px 0;"><strong>WhatsApp:</strong> ${myPhone || 'N/A'}</p>
                             <p style="color: #334155; margin: 5px 0;"><strong>Company:</strong> ${myCompany || 'N/A'}</p>
+                            <p style="color: #334155; margin: 5px 0;"><strong>URL:</strong> ${myUrl ? `<a href="${myUrl}">${myUrl}</a>` : 'N/A'}</p>
                             
                             <hr style="border: none; border-top: 1px solid #cbd5e1; margin: 20px 0;" />
                             
                             <h3 style="color: #2563eb; margin-top: 0;">Lead Target Details</h3>
                             <p style="color: #334155; margin: 5px 0;"><strong>Entity Name:</strong> ${leadName}</p>
                             <p style="color: #334155; margin: 5px 0;"><strong>Contact Email:</strong> ${leadEmail || 'N/A'}</p>
-                            <p style="color: #334155; margin: 5px 0;"><strong>Contact Phone:</strong> ${leadPhone || 'N/A'}</p>
+                            <p style="color: #334155; margin: 5px 0;"><strong>WhatsApp:</strong> ${leadPhone || 'N/A'}</p>
+                            <p style="color: #334155; margin: 5px 0;"><strong>URL:</strong> ${leadUrl ? `<a href="${leadUrl}">${leadUrl}</a>` : 'N/A'}</p>
                             <p style="color: #334155; margin: 5px 0;"><strong>Context/Needs:</strong> ${notes || 'None provided'}</p>
                         </div>
                         <p style="color: #64748b; font-size: 13px;">Log in to the Admin Dashboard to review this lead.</p>
