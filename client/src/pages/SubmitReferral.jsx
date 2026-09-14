@@ -238,8 +238,66 @@ const SubmitReferral = () => {
                 </div>
             </section>
 
+            {/* SPECIAL BENEFITS */}
+            <section className="w-full py-20 lg:py-24 bg-gradient-to-br from-indigo-50 to-blue-50 relative border-t border-slate-100">
+                <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+                    <div className="text-center max-w-3xl mx-auto mb-16">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-blue-100 rounded-full text-xs font-bold text-blue-600 mb-6 tracking-wide shadow-sm">
+                            <span className="text-base leading-none">🎁</span>
+                            Exclusive Client Package
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-6">Special Benefits for Your Referral</h2>
+                        <p className="text-lg text-slate-600 font-medium leading-relaxed">
+                            When you introduce a business to Mir Web Solutions, your referred contact receives an exclusive client welcome package to ensure their project succeeds from day one:
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+                        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_10px_30px_-15px_rgba(37,99,235,0.1)] flex items-start gap-5 hover:-translate-y-1 transition-transform">
+                            <div className="w-14 h-14 bg-green-50 border border-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                                💰
+                            </div>
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">10% Savings on Every Project</h4>
+                                <p className="text-slate-500 font-medium leading-relaxed text-sm">A direct 10% discount applied to their total project investment.</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_10px_30px_-15px_rgba(37,99,235,0.1)] flex items-start gap-5 hover:-translate-y-1 transition-transform">
+                            <div className="w-14 h-14 bg-purple-50 border border-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                                🎨
+                            </div>
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">Complimentary Logo Design</h4>
+                                <p className="text-slate-500 font-medium leading-relaxed text-sm">A custom, professional logo to elevate their brand identity.</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_10px_30px_-15px_rgba(37,99,235,0.1)] flex items-start gap-5 hover:-translate-y-1 transition-transform">
+                            <div className="w-14 h-14 bg-orange-50 border border-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                                🛠️
+                            </div>
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">2 Months of Free Maintenance</h4>
+                                <p className="text-slate-500 font-medium leading-relaxed text-sm">Full post-launch support covering bug fixes, error resolution, plugin updates, and core maintenance.</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-[0_10px_30px_-15px_rgba(37,99,235,0.1)] flex items-start gap-5 hover:-translate-y-1 transition-transform">
+                            <div className="w-14 h-14 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                                📊
+                            </div>
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-900 mb-2 tracking-tight">21-Day Technical & SEO Audit</h4>
+                                <p className="text-slate-500 font-medium leading-relaxed text-sm">A comprehensive post-launch review evaluating site health, performance speeds, security, and search indexing progress.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* FORM SECTION */}
-            <section id="referral-form" className="w-full py-20 lg:py-24 bg-blue-50/50 relative">
+            <section id="referral-form" className="w-full py-20 lg:py-24 bg-white relative">
                 <div className="max-w-4xl mx-auto px-6 lg:px-12">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-4">Submit a Referral</h2>
