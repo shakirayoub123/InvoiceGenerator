@@ -17,18 +17,24 @@ const PublicLayout = ({ children }) => {
             </div>
 
             {/* Enterprise Navbar */}
-            <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-50 transition-all print:hidden">
-                <div className="max-w-[1400px] mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-3 text-2xl font-black tracking-tighter text-slate-900 cursor-pointer hover:opacity-80 transition-opacity">
+            <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-50 transition-all print:hidden h-20 flex flex-col justify-center">
+                <div className="max-w-[1400px] w-full mx-auto px-6 lg:px-12 flex items-center justify-between">
+                    <Link to="/" className="flex items-center" style={{ width: '220px', height: '60px' }}>
                         {appLogo ? (
-                            <img src={appLogo} alt="MIR Systems" className="h-10 max-w-[200px] object-contain" />
+                            <img src={appLogo} alt="Company Logo" style={{ height: '100%', width: '100%', objectFit: 'contain', objectPosition: 'left center', display: 'block', transform: 'scale(1.8)', transformOrigin: 'left center' }} />
                         ) : (
-                            <img src="/logo.svg" alt="Mir Web Solutions" className="w-[180px] object-contain hover:scale-105 transition-transform" />
+                            <img src="/White final MWS Logo.png" alt="Mir Web Solutions" style={{ height: '100%', width: '100%', objectFit: 'contain', objectPosition: 'left center', display: 'block', transform: 'scale(1.8)', transformOrigin: 'left center' }} className="drop-shadow-sm opacity-95" />
                         )}
-                    </div>
-                    <div className="flex items-center gap-6 text-sm font-bold ml-auto">
-                        <Link to="/login" className="text-slate-600 hover:text-blue-600 transition-colors hidden md:block">Admin Login</Link>
-                        <a href="https://mirwebsolutions.com/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-6 py-2.5 rounded-full shadow-[0_4px_14px_rgba(0,0,0,0.15)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.2)] transition-all duration-300 transform hover:-translate-y-0.5">
+                    </Link>
+                    <div className="flex items-center gap-4 text-sm font-extrabold ml-auto">
+                        <Link to="/" className="hidden md:flex items-center justify-center px-5 py-2.5 rounded-full text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition-all">Home</Link>
+
+                        <Link to="/referral" className="hidden md:flex items-center justify-center px-5 py-2.5 rounded-full text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition-all">Submit a Referral</Link>
+                        <div className="h-6 w-px bg-slate-200 hidden md:block mx-1"></div>
+
+                        <Link to="/login" className="hidden sm:flex items-center justify-center px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:border-blue-600 hover:text-blue-600 shadow-sm transition-all focus:ring-4 focus:ring-blue-50">Admin Login</Link>
+
+                        <a href="https://mirwebsolutions.com/" target="_blank" rel="noreferrer" className="group flex items-center gap-2 bg-slate-900 hover:bg-black text-white px-6 py-2.5 rounded-full shadow-lg shadow-slate-900/20 transition-all transform hover:-translate-y-0.5">
                             Agency Site <ChevronRight size={16} className="text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all" />
                         </a>
                     </div>

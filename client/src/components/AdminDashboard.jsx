@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 const AdminDashboard = () => {
     const [invoices, setInvoices] = useState([]);
+    const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [baseCurrency, setBaseCurrency] = useState('₹');
@@ -26,17 +27,21 @@ const AdminDashboard = () => {
     };
 
     useEffect(() => {
-        const fetchInvoices = async () => {
+        const fetchDashboardData = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/invoices');
-                setInvoices(res.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
+                const [invRes, cliRes] = await Promise.all([
+                    axios.get('http://localhost:5001/api/invoices'),
+                    axios.get('http://localhost:5001/api/clients')
+                ]);
+                setInvoices(invRes.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
+                setClients(cliRes.data);
                 setLoading(false);
             } catch (err) {
                 console.error(err);
                 setLoading(false);
             }
         };
-        fetchInvoices();
+        fetchDashboardData();
     }, []);
 
     // --- METRICS CALCULATION ---
@@ -55,6 +60,12 @@ const AdminDashboard = () => {
 
     const kpiCurrency = baseCurrency;
 
+    // --- CRM METRICS ---
+    const totalClients = clients.length;
+    const allLeads = clients.flatMap(c => c.referrals);
+    const convertedLeads = allLeads.filter(l => l.status === 'Converted');
+    const newLeads = allLeads.filter(l => l.status === 'New');
+
     // --- CHART DATA CALCULATION ---
     // Generate last 6 months data points
     const chartData = Array.from({ length: 6 }).map((_, i) => {
@@ -72,6 +83,15 @@ const AdminDashboard = () => {
         { name: 'Overdue', value: invoices.filter(i => (!i.amountPaid || i.amountPaid < i.total) && new Date(i.dueDate) < new Date(new Date().setHours(0, 0, 0, 0))).length, color: '#ef4444' }
     ].filter(item => item.value > 0);
     if (pieChartData.length === 0) pieChartData.push({ name: 'No Data', value: 1, color: '#cbd5e1' });
+
+    const leadsPieChartData = [
+        { name: 'New', value: allLeads.filter(l => l.status === 'New').length, color: '#3b82f6' },
+        { name: 'Contacted', value: allLeads.filter(l => l.status === 'Contacted').length, color: '#f59e0b' },
+        { name: 'In Progress', value: allLeads.filter(l => l.status === 'In Progress').length, color: '#8b5cf6' },
+        { name: 'Converted', value: allLeads.filter(l => l.status === 'Converted').length, color: '#10b981' },
+        { name: 'Declined', value: allLeads.filter(l => l.status === 'Declined').length, color: '#ef4444' }
+    ].filter(item => item.value > 0);
+    if (leadsPieChartData.length === 0) leadsPieChartData.push({ name: 'No Data', value: 1, color: '#cbd5e1' });
 
     return (
         <div className="w-full space-y-8 animate-fade-in pb-10">
@@ -147,14 +167,49 @@ const AdminDashboard = () => {
                 </div>
             </div>
 
+            {/* CRM KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center flex-shrink-0">
+                        <Users size={28} className="fill-current" />
+                    </div>
+                    <div>
+                        <h3 className="text-[13px] font-bold text-slate-500">Total Clients</h3>
+                        <div className="text-2xl font-black text-slate-800 mt-0.5">{totalClients}</div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center flex-shrink-0">
+                        <Plus size={28} className="stroke-[3]" />
+                    </div>
+                    <div>
+                        <h3 className="text-[13px] font-bold text-slate-500">Total Leads Generated</h3>
+                        <div className="text-2xl font-black text-slate-800 mt-0.5">{allLeads.length}</div>
+                        <div className="text-[11px] font-bold text-blue-500 mt-1">{newLeads.length} awaiting action</div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle size={28} className="fill-current" />
+                    </div>
+                    <div>
+                        <h3 className="text-[13px] font-bold text-slate-500">Converted Leads</h3>
+                        <div className="text-2xl font-black text-slate-800 mt-0.5">{convertedLeads.length}</div>
+                        <div className="text-[11px] font-bold text-emerald-500 mt-1">{allLeads.length > 0 ? Math.round((convertedLeads.length / allLeads.length) * 100) : 0}% Conversion Rate</div>
+                    </div>
+                </div>
+            </div>
+
             {/* Layout Grid */}
             <div className="space-y-8">
                 {/* Main Content Column */}
                 <div className="w-full space-y-8">
 
                     {/* Chart Section */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div className="lg:col-span-2 bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                        <div className="lg:col-span-2 bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col">
                             <div className="flex justify-between items-center mb-8">
                                 <h3 className="text-lg font-black text-slate-800 tracking-tight">Revenue Overview</h3>
                                 <select className="bg-slate-50 border border-slate-200 text-sm font-bold text-slate-600 px-4 py-2 rounded-lg outline-none cursor-pointer">
@@ -162,11 +217,11 @@ const AdminDashboard = () => {
                                     <option>This Year</option>
                                 </select>
                             </div>
-                            <div className="h-64 w-full">
+                            <div className="h-48 w-full mt-auto">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={32}>
+                                    <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={24}>
                                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: '600' }} dy={10} />
-                                        <YAxis width={80} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: '600' }} tickFormatter={(value) => `${kpiCurrency}${value >= 1000 ? (value / 1000) + 'K' : value}`} />
+                                        <YAxis width={60} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: '600' }} tickFormatter={(value) => `${kpiCurrency}${value >= 1000 ? (value / 1000) + 'K' : value}`} />
                                         <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="3 3" />
                                         <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', fontWeight: 'bold' }} />
                                         <Bar dataKey="revenue" fill="#7baafe" radius={[4, 4, 0, 0]} />
@@ -176,90 +231,168 @@ const AdminDashboard = () => {
                         </div>
 
                         <div className="lg:col-span-1 bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col">
-                            <div className="mb-4">
-                                <h3 className="text-lg font-black text-slate-800 tracking-tight">Status Distribution</h3>
+                            <div className="mb-4 text-center">
+                                <h3 className="text-md font-black text-slate-800 tracking-tight">Invoice Status</h3>
                             </div>
-                            <div className="h-64 w-full flex-1">
+                            <div className="h-48 w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>
-                                        <Pie data={pieChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={85} paddingAngle={2} dataKey="value" stroke="none">
+                                        <Pie data={pieChartData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={2} dataKey="value" stroke="none">
                                             {pieChartData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={entry.color} />
                                             ))}
                                         </Pie>
                                         <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', fontWeight: 'bold', padding: '8px 12px' }} itemStyle={{ color: '#1e293b' }} formatter={(value, name) => [value + ' Invoices', name]} />
-                                        <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', color: '#64748b' }} />
+                                        <Legend verticalAlign="bottom" height={20} iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-1 bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col">
+                            <div className="mb-4 text-center">
+                                <h3 className="text-md font-black text-slate-800 tracking-tight">Leads Pipeline</h3>
+                            </div>
+                            <div className="h-48 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={leadsPieChartData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={2} dataKey="value" stroke="none">
+                                            {leadsPieChartData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', fontWeight: 'bold', padding: '8px 12px' }} itemStyle={{ color: '#1e293b' }} formatter={(value, name) => [value + ' Leads', name]} />
+                                        <Legend verticalAlign="bottom" height={20} iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }} />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
                     </div>
 
-                    {/* Recent Invoices Table */}
-                    <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col">
-                        <div className="p-6 flex justify-between items-center bg-white border-b border-transparent">
-                            <h2 className="text-lg font-black text-slate-800 tracking-tight">Recent Invoices</h2>
-                            <Link xl to="/admin/invoices" className="text-sm font-bold text-[#3b82f6] hover:underline">View All</Link>
+                    {/* Activity Tables Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                        {/* Recent Invoices Table */}
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col">
+                            <div className="p-6 flex justify-between items-center bg-white border-b border-transparent">
+                                <h2 className="text-lg font-black text-slate-800 tracking-tight">Recent Invoices</h2>
+                                <Link to="/admin/invoices" className="text-sm font-bold text-[#3b82f6] hover:underline">View All</Link>
+                            </div>
+
+                            <div className="overflow-x-auto px-6 pb-6">
+                                <table className="w-full text-left border-collapse min-w-[700px]">
+                                    <thead>
+                                        <tr className="bg-[#f8fafc] border-y border-[#e2e8f0]">
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900 rounded-l-xl">#</th>
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900">Client</th>
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900 text-center">Date</th>
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900 text-right">Amount</th>
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900 text-center">Status</th>
+                                            <th className="py-3.5 px-6 text-xs font-black text-slate-900 text-right rounded-r-xl">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {loading ? (
+                                            <tr>
+                                                <td colSpan="6" className="py-12 text-center text-slate-500 font-medium">Loading ledger...</td>
+                                            </tr>
+                                        ) : invoices.slice(0, 5).map((inv, idx) => {
+                                            let isPaid = inv.amountPaid >= inv.total && inv.total > 0;
+                                            let isPartiallyPaid = inv.amountPaid > 0 && inv.amountPaid < inv.total;
+                                            let isPending = !isPaid && !isPartiallyPaid && new Date(inv.dueDate) >= new Date();
+                                            let isOverdue = !isPaid && new Date(inv.dueDate) < new Date();
+
+                                            return (
+                                                <tr key={inv._id} className={`border-b border-slate-50 hover:bg-slate-50/50 transition-colors ${idx === 4 ? 'border-none' : ''}`}>
+                                                    <td className="py-4 px-4 text-sm font-semibold text-slate-600">
+                                                        INV-{inv.invoiceNumber.padStart(4, '0')}
+                                                    </td>
+                                                    <td className="py-4 px-4 text-sm font-semibold text-slate-800">
+                                                        {inv.clientDetails.name}
+                                                    </td>
+                                                    <td className="py-4 px-4 text-center text-sm font-medium text-slate-500">
+                                                        {format(new Date(inv.date), 'dd MMM yyyy')}
+                                                    </td>
+                                                    <td className="py-4 px-4 text-sm font-bold text-slate-700 text-right">
+                                                        {(inv.currency || '₹')}{inv.total.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                                                    </td>
+                                                    <td className="py-4 px-4 text-center">
+                                                        {isPaid && <span className="inline-block px-3 py-1 bg-[#dcfce7] text-[#16a34a] font-bold text-xs rounded-full">Paid</span>}
+                                                        {isPartiallyPaid && <span className="inline-block px-3 py-1 bg-[#fef08a] text-[#ca8a04] font-bold text-xs rounded-full">Partially Paid</span>}
+                                                        {isPending && <span className="inline-block px-3 py-1 bg-[#ffedd5] text-[#ea580c] font-bold text-xs rounded-full">Pending</span>}
+                                                        {isOverdue && <span className="inline-block px-3 py-1 bg-[#fee2e2] text-[#ef4444] font-bold text-xs rounded-full">Overdue</span>}
+                                                    </td>
+                                                    <td className="py-4 px-6 text-right">
+                                                        <div className="flex items-center justify-end gap-3">
+                                                            <button onClick={(e) => { e.stopPropagation(); setSelectedInvoice(inv); }} className="text-mir-blue hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition-colors" title="View Details">
+                                                                <Eye size={16} />
+                                                            </button>
+                                                            <button onClick={(e) => deleteInvoice(inv._id, e)} className="text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 p-2 rounded-lg transition-colors" title="Delete">
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
-                        <div className="overflow-x-auto px-6 pb-6">
-                            <table className="w-full text-left border-collapse min-w-[700px]">
-                                <thead>
-                                    <tr className="bg-[#f8fafc] border-y border-[#e2e8f0]">
-                                        <th className="py-3.5 px-4 text-xs font-black text-slate-900 rounded-l-xl">#</th>
-                                        <th className="py-3.5 px-4 text-xs font-black text-slate-900">Client</th>
-                                        <th className="py-3.5 px-4 text-xs font-black text-slate-900 text-center">Date</th>
-                                        <th className="py-3.5 px-4 text-xs font-black text-slate-900 text-right">Amount</th>
-                                        <th className="py-3.5 px-4 text-xs font-black text-slate-900 text-center">Status</th>
-                                        <th className="py-3.5 px-6 text-xs font-black text-slate-900 text-right rounded-r-xl">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {loading ? (
-                                        <tr>
-                                            <td colSpan="6" className="py-12 text-center text-slate-500 font-medium">Loading ledger...</td>
+                        {/* Recent Leads Table */}
+                        <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col">
+                            <div className="p-6 flex justify-between items-center bg-white border-b border-transparent">
+                                <h2 className="text-lg font-black text-slate-800 tracking-tight">Recent Leads</h2>
+                                <Link to="/admin/clients" className="text-sm font-bold text-[#3b82f6] hover:underline">View All</Link>
+                            </div>
+                            <div className="overflow-x-auto px-6 pb-6">
+                                <table className="w-full text-left border-collapse min-w-[400px]">
+                                    <thead>
+                                        <tr className="bg-[#f8fafc] border-y border-[#e2e8f0]">
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900 rounded-l-xl">Lead</th>
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900">Referred By</th>
+                                            <th className="py-3.5 px-4 text-xs font-black text-slate-900 text-center rounded-r-xl">Status</th>
                                         </tr>
-                                    ) : invoices.slice(0, 5).map((inv, idx) => {
-                                        let isPaid = inv.amountPaid >= inv.total && inv.total > 0;
-                                        let isPartiallyPaid = inv.amountPaid > 0 && inv.amountPaid < inv.total;
-                                        let isPending = !isPaid && !isPartiallyPaid && new Date(inv.dueDate) >= new Date();
-                                        let isOverdue = !isPaid && new Date(inv.dueDate) < new Date();
-
-                                        return (
-                                            <tr key={inv._id} className={`border-b border-slate-50 hover:bg-slate-50/50 transition-colors ${idx === 4 ? 'border-none' : ''}`}>
-                                                <td className="py-4 px-4 text-sm font-semibold text-slate-600">
-                                                    INV-{inv.invoiceNumber.padStart(4, '0')}
-                                                </td>
-                                                <td className="py-4 px-4 text-sm font-semibold text-slate-800">
-                                                    {inv.clientDetails.name}
-                                                </td>
-                                                <td className="py-4 px-4 text-center text-sm font-medium text-slate-500">
-                                                    {format(new Date(inv.date), 'dd MMM yyyy')}
-                                                </td>
-                                                <td className="py-4 px-4 text-sm font-bold text-slate-700 text-right">
-                                                    {(inv.currency || '₹')}{inv.total.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                                                </td>
-                                                <td className="py-4 px-4 text-center">
-                                                    {isPaid && <span className="inline-block px-3 py-1 bg-[#dcfce7] text-[#16a34a] font-bold text-xs rounded-full">Paid</span>}
-                                                    {isPartiallyPaid && <span className="inline-block px-3 py-1 bg-[#fef08a] text-[#ca8a04] font-bold text-xs rounded-full">Partially Paid</span>}
-                                                    {isPending && <span className="inline-block px-3 py-1 bg-[#ffedd5] text-[#ea580c] font-bold text-xs rounded-full">Pending</span>}
-                                                    {isOverdue && <span className="inline-block px-3 py-1 bg-[#fee2e2] text-[#ef4444] font-bold text-xs rounded-full">Overdue</span>}
-                                                </td>
-                                                <td className="py-4 px-6 text-right">
-                                                    <div className="flex items-center justify-end gap-3">
-                                                        <button onClick={(e) => { e.stopPropagation(); setSelectedInvoice(inv); }} className="text-mir-blue hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition-colors" title="View Details">
-                                                            <Eye size={16} />
-                                                        </button>
-                                                        <button onClick={(e) => deleteInvoice(inv._id, e)} className="text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 p-2 rounded-lg transition-colors" title="Delete">
-                                                            <Trash2 size={16} />
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                    </thead>
+                                    <tbody>
+                                        {loading ? (
+                                            <tr>
+                                                <td colSpan="3" className="py-12 text-center text-slate-500 font-medium">Loading leads...</td>
                                             </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
+                                        ) : allLeads.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="3" className="py-12 text-center text-slate-500 font-medium">No leads generated yet.</td>
+                                            </tr>
+                                        ) : allLeads.slice(0, 5).map((lead, idx) => {
+                                            const getStatusColor = (status) => {
+                                                switch (status) {
+                                                    case 'New': return 'bg-blue-100 text-blue-700';
+                                                    case 'Contacted': return 'bg-amber-100 text-amber-700';
+                                                    case 'In Progress': return 'bg-purple-100 text-purple-700';
+                                                    case 'Converted': return 'bg-emerald-100 text-emerald-700';
+                                                    case 'Declined': return 'bg-red-100 text-red-700';
+                                                    default: return 'bg-slate-100 text-slate-700';
+                                                }
+                                            };
+                                            return (
+                                                <tr key={idx} className={`border-b border-slate-50 hover:bg-slate-50/50 transition-colors ${idx === 4 ? 'border-none' : ''}`}>
+                                                    <td className="py-4 px-4">
+                                                        <div className="text-sm font-bold text-slate-800">{lead.leadName}</div>
+                                                        <div className="text-[11px] font-semibold text-slate-400 mt-0.5">{format(new Date(lead.dateReferred), 'dd MMM yyyy')}</div>
+                                                    </td>
+                                                    <td className="py-4 px-4 text-sm font-semibold text-slate-600">
+                                                        {lead.referrerName}
+                                                    </td>
+                                                    <td className="py-4 px-4 text-center">
+                                                        <span className={`inline-block px-3 py-1 font-bold text-[11px] rounded-full ${getStatusColor(lead.status)}`}>{lead.status}</span>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

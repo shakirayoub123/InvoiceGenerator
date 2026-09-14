@@ -15,6 +15,8 @@ import AdminDashboard from './components/AdminDashboard';
 import AdminInvoices from './components/AdminInvoices';
 import AdminTemplates from './components/AdminTemplates';
 import AdminSettings from './components/AdminSettings';
+import AdminClients from './components/AdminClients';
+import SubmitReferral from './pages/SubmitReferral';
 
 // --- AUTHENTICATION GUARD ---
 const ProtectedRoute = ({ children }) => {
@@ -29,13 +31,17 @@ function App() {
       <Toaster position="top-center" toastOptions={{ style: { background: '#333', color: '#fff', borderRadius: '10px' } }} />
       <Router>
         <Routes>
-          {/* Public Website Route */}
+          {/* Public Website Routes */}
           <Route path="/" element={
             <PublicLayout>
               <Home />
             </PublicLayout>
           } />
-
+          <Route path="/referral" element={
+            <PublicLayout>
+              <SubmitReferral />
+            </PublicLayout>
+          } />
           {/* Admin Login Route */}
           <Route path="/login" element={<Login />} />
 
@@ -51,6 +57,13 @@ function App() {
             <ProtectedRoute>
               <EnterpriseLayout>
                 <AdminInvoices />
+              </EnterpriseLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/clients" element={
+            <ProtectedRoute>
+              <EnterpriseLayout>
+                <AdminClients />
               </EnterpriseLayout>
             </ProtectedRoute>
           } />

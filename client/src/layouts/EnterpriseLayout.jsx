@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Building, Settings as SettingsIcon, ChevronRight, Search } from 'lucide-react';
+import { LayoutDashboard, FileText, LayoutTemplate, Settings, Users, LogOut, ChevronRight, Menu, X, Search } from 'lucide-react';
 import { SettingsContext } from '../contexts/SettingsContext';
 
 const SidebarLink = ({ to, icon: Icon, label }) => {
@@ -35,15 +35,16 @@ const EnterpriseLayout = ({ children }) => {
             <aside className="w-64 bg-[#1b253b] flex flex-col z-20 text-white pb-6 relative print:hidden">
                 <div className="h-28 flex flex-col justify-center items-center px-6 mb-4">
                     <div className="flex flex-col items-center gap-1 text-center">
-                        <img src="/logo-white-text.svg" alt="Mir Web Solutions" className="w-[180px] mt-2 object-contain drop-shadow-md opacity-90" />
+                        <img src="/White final MWS Logo.png" alt="Mir Web Solutions" className="w-[180px] mt-2 object-contain drop-shadow-md opacity-90" />
                     </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto py-4 pr-2">
                     <SidebarLink to="/admin" icon={LayoutDashboard} label="Dashboard" />
-                    <SidebarLink to="/admin/invoices" icon={Building} label="Invoices" />
-                    <SidebarLink to="/admin/templates" icon={SettingsIcon} label="Templates" />
-                    <SidebarLink to="/admin/settings" icon={SettingsIcon} label="Settings" />
+                    <SidebarLink to="/admin/invoices" icon={FileText} label="Invoices" />
+                    <SidebarLink to="/admin/clients" icon={Users} label="Clients & Leads" />
+                    <SidebarLink to="/admin/templates" icon={LayoutTemplate} label="Templates" />
+                    <SidebarLink to="/admin/settings" icon={Settings} label="Settings" />
                 </div>
 
                 <div className="px-8 mt-auto italic text-slate-400/80 text-[11px] leading-relaxed relative z-10 border-t border-white/5 pt-6">
