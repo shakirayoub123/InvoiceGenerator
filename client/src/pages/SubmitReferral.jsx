@@ -23,7 +23,7 @@ const SERVICES = [
     { title: 'Website Redesign', body: 'Improve an outdated website with a cleaner, stronger UX.', icon: '✨' },
     { title: 'E-commerce', body: 'Build and improve online stores for a smooth buying experience.', icon: '🛒' },
     { title: 'SEO', body: 'Improve visibility and presence in search engines.', icon: '📈' },
-    { title: 'Lead Generation', body: 'Attract and connect with potential customers effectively.', icon: '🎯' },
+    // { title: 'Lead Generation', body: 'Attract and connect with potential customers effectively.', icon: '🎯' },
     { title: 'Appointment Setting', body: 'Generate qualified conversations and sales opportunities.', icon: '📅' },
     { title: 'Social Media', body: 'Create and manage a consistent social media presence.', icon: '📱' }
 ];
@@ -94,7 +94,7 @@ const SubmitReferral = () => {
         <div className="w-full bg-[#f8fafc] animate-fade-in font-sans overflow-hidden">
 
             {/* HERO SECTION */}
-            <section className="relative px-6 pt-16 pb-16 lg:pt-20 lg:pb-20 overflow-hidden bg-white">
+            <section className="relative px-6 pt-8 lg:pt-12 pb-20 lg:pb-28 min-h-[90svh] lg:min-h-[calc(100svh-6rem)] flex flex-col justify-center overflow-hidden bg-white w-full">
                 <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-100/40 blur-[100px] pointer-events-none"></div>
                 <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-indigo-100/40 blur-[100px] pointer-events-none"></div>
 
@@ -135,7 +135,7 @@ const SubmitReferral = () => {
             </section>
 
             {/* HOW IT WORKS */}
-            <section className="w-full py-20 lg:py-24 bg-slate-50 relative">
+            <section className="w-full py-20 lg:py-24 min-h-[100svh] flex flex-col justify-center bg-slate-50 relative">
                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.02]"></div>
                 <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-20">
@@ -161,28 +161,8 @@ const SubmitReferral = () => {
             </section>
 
             {/* WHO & WHAT */}
-            <section className="w-full py-20 lg:py-24 bg-white relative">
+            <section className="w-full py-20 lg:py-24 min-h-[100svh] flex flex-col justify-center bg-white relative">
                 <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
-
-                    {/* Who */}
-                    <div className="lg:col-span-5 relative">
-                        <div className="sticky top-12">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-50 rounded-xl flex items-center justify-center mb-5 border border-blue-50 shadow-sm shadow-blue-500/10">
-                                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                            </div>
-                            <h3 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 mb-4">Who Can You Refer?</h3>
-                            <p className="text-slate-500 text-base font-medium mb-8 leading-relaxed">
-                                You don't need to be a marketing professional or work in the web industry. If someone you know is planning a new website or considering a redesign, they could be a good referral!
-                            </p>
-                            <div className="flex flex-wrap gap-3 mb-10">
-                                {TARGETS.map((item, i) => (
-                                    <span key={i} className="px-4 py-2.5 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 transition-colors cursor-default border border-slate-200 hover:border-blue-200 rounded-xl text-sm font-bold text-slate-700 shadow-sm">
-                                        {item}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
 
                     {/* What */}
                     <div className="lg:col-span-7">
@@ -206,11 +186,31 @@ const SubmitReferral = () => {
                         </div>
                     </div>
 
+                    {/* Who */}
+                    <div className="lg:col-span-5 relative">
+                        <div className="sticky top-12">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-50 rounded-xl flex items-center justify-center mb-5 border border-blue-50 shadow-sm shadow-blue-500/10">
+                                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            </div>
+                            <h3 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 mb-4">Who Can You Refer?</h3>
+                            <p className="text-slate-500 text-base font-medium mb-8 leading-relaxed">
+                                You don't need to be a marketing professional or work in the web industry. If someone you know is planning a new website or considering a redesign, they could be a good referral!
+                            </p>
+                            <div className="flex flex-wrap gap-3 mb-10">
+                                {TARGETS.map((item, i) => (
+                                    <span key={i} className="px-4 py-2.5 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 transition-colors cursor-default border border-slate-200 hover:border-blue-200 rounded-xl text-sm font-bold text-slate-700 shadow-sm">
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
             {/* WHY REFER */}
-            <section className="w-full py-20 lg:py-24 bg-slate-900 text-white relative overflow-hidden">
+            <section className="w-full py-20 lg:py-24 min-h-[100svh] flex flex-col justify-center bg-slate-900 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px] pointer-events-none"></div>
                 <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-indigo-900/20 rounded-full blur-[120px] pointer-events-none"></div>
 
@@ -226,7 +226,8 @@ const SubmitReferral = () => {
                             { t: 'No Project Management', d: 'Once you make the introduction, our expert team seamlessly handles all ongoing communication and project delivery.', icon: '⚡' },
                             { t: 'Professional Service', d: 'Your referral is handled by a dedicated team from the initial discovery conversation completely through to the final launch.', icon: '💎' },
                             { t: 'Earn From Your Network', d: 'If your referral becomes a committed client, you automatically receive a direct referral percentage commission.', icon: '💸' },
-                            { t: 'Long-Term Partnership', d: 'You can continue referring businesses seamlessly whenever you come across a relevant digital opportunity.', icon: '🚀' }
+                            { t: 'Long-Term Partnership', d: 'You can continue referring businesses seamlessly whenever you come across a relevant digital opportunity.', icon: '🚀' },
+                            { t: 'Lead Generation', d: 'Attract and connect with potential customers effectively.', icon: '🎯' }
                         ].map((item, i) => (
                             <div key={i} className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-8 rounded-3xl hover:bg-slate-800/80 transition-colors">
                                 <div className="text-3xl mb-6 bg-slate-800/80 w-16 h-16 rounded-2xl flex items-center justify-center border border-slate-700 shadow-inner">{item.icon}</div>
@@ -239,7 +240,7 @@ const SubmitReferral = () => {
             </section>
 
             {/* SPECIAL BENEFITS */}
-            <section className="w-full py-20 lg:py-24 bg-gradient-to-br from-indigo-50 to-blue-50 relative border-t border-slate-100">
+            <section className="w-full py-20 lg:py-24 min-h-[100svh] flex flex-col justify-center bg-gradient-to-br from-indigo-50 to-blue-50 relative border-t border-slate-100">
                 <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-blue-100 rounded-full text-xs font-bold text-blue-600 mb-6 tracking-wide shadow-sm">
@@ -297,7 +298,7 @@ const SubmitReferral = () => {
             </section>
 
             {/* FORM SECTION */}
-            <section id="referral-form" className="w-full py-20 lg:py-24 bg-white relative">
+            <section id="referral-form" className="w-full py-20 lg:py-24 min-h-[100svh] flex flex-col justify-center bg-white relative">
                 <div className="max-w-4xl mx-auto px-6 lg:px-12">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-4">Submit a Referral</h2>
@@ -321,7 +322,7 @@ const SubmitReferral = () => {
                             <div>
                                 <div className="flex items-center gap-4 mb-8">
                                     <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-black text-lg">1</div>
-                                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Your Details</h3>
+                                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Referred By</h3>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <Field label="Full Name">
@@ -335,6 +336,14 @@ const SubmitReferral = () => {
                                     </Field>
                                     <Field label="Company" optional>
                                         <input type="text" name="myCompany" value={formData.myCompany} onChange={handleChange} className={inputClass} placeholder="Acme Corp" />
+                                    </Field>
+                                </div>
+                                <div className="grid grid-cols-1 gap-6 mt-6">
+                                    <Field label="What do they need help with?">
+                                        <textarea required name="notes" value={formData.notes} onChange={handleChange} rows="4" className={inputClass + ' resize-none'} placeholder="e.g., They are looking to launch a brand new high-performance website." />
+                                    </Field>
+                                    <Field label="Anything else we should know?" optional>
+                                        <textarea name="extraNotes" value={formData.extraNotes || ''} onChange={handleChange} rows="2" className={inputClass + ' resize-none'} placeholder="Timeline, budget considerations, or specific contacts..." />
                                     </Field>
                                 </div>
                             </div>
@@ -364,21 +373,7 @@ const SubmitReferral = () => {
                                 </div>
                             </div>
 
-                            {/* BLOCK 3 */}
-                            <div>
-                                <div className="flex items-center gap-4 mb-8">
-                                    <div className="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center font-black text-lg">3</div>
-                                    <h3 className="text-xl font-black text-slate-900 tracking-tight">Referral Context</h3>
-                                </div>
-                                <div className="grid grid-cols-1 gap-6">
-                                    <Field label="What do they need help with?">
-                                        <textarea required name="notes" value={formData.notes} onChange={handleChange} rows="4" className={inputClass + ' resize-none'} placeholder="e.g., They are looking to launch a brand new high-performance website." />
-                                    </Field>
-                                    <Field label="Anything else we should know?" optional>
-                                        <textarea name="extraNotes" value={formData.extraNotes || ''} onChange={handleChange} rows="2" className={inputClass + ' resize-none'} placeholder="Timeline, budget considerations, or specific contacts..." />
-                                    </Field>
-                                </div>
-                            </div>
+
                         </div>
 
                         <div className="mt-14 pt-8 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -403,7 +398,7 @@ const SubmitReferral = () => {
             </section>
 
             {/* FAQS */}
-            <section className="w-full bg-white py-20 lg:py-24 border-t border-slate-100">
+            <section className="w-full bg-white py-20 lg:py-24 min-h-[100svh] flex flex-col justify-center border-t border-slate-100">
                 <div className="max-w-3xl mx-auto px-6 lg:px-12">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-6">Common Questions</h2>

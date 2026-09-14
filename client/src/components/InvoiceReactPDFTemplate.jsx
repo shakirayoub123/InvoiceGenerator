@@ -75,7 +75,7 @@ const InvoiceReactPDFTemplate = ({ invoice, currency, templateTheme }) => {
 
                     <View style={styles.titleBox}>
                         <Text style={[styles.invoiceTitle, { color: themeColor }]}>INVOICE</Text>
-                        <Text style={styles.invoiceNumber}># {invoice.invoiceNumber} {invoice.clientDetails?.name || ''}</Text>
+                        <Text style={styles.invoiceNumber}># {invoice.invoiceNumber}</Text>
 
                         <View style={styles.metaTable}>
                             <View style={styles.metaRow}>

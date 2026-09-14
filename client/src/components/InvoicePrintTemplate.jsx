@@ -34,7 +34,7 @@ const InvoicePrintTemplate = ({ invoice, currency, templateTheme }) => {
                     <h1 className="text-[44px] font-normal text-[#333333] mb-1 uppercase" style={templateTheme && templateTheme.color ? { color: templateTheme.color } : {}}>
                         INVOICE
                     </h1>
-                    <div className="text-[#888888] text-[15px] mb-12"># {invoice.invoiceNumber} {invoice.clientDetails?.name || ''}</div>
+                    <div className="text-[#888888] text-[15px] mb-12"># {invoice.invoiceNumber}</div>
 
                     <table className="w-full text-[13px] mb-2">
                         <tbody>

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, FileText, LayoutTemplate, Settings, Users, LogOut, ChevronRight, Menu, X, Search } from 'lucide-react';
 import { SettingsContext } from '../contexts/SettingsContext';
@@ -24,6 +24,18 @@ const SidebarLink = ({ to, icon: Icon, label }) => {
 
 const EnterpriseLayout = ({ children }) => {
     const { appLogo } = useContext(SettingsContext);
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const profileMenuRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+                setShowProfileMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('isAuthenticated');
@@ -63,9 +75,27 @@ const EnterpriseLayout = ({ children }) => {
                         <button className="text-slate-400 hover:text-slate-600 transition-colors">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
                         </button>
-                        <div className="flex items-center gap-3 cursor-pointer group" onClick={handleLogout}>
-                            <div className="w-9 h-9 rounded-full bg-[#6366f1] text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">S</div>
-                            <span className="text-sm font-bold text-slate-700 group-hover:text-black transition-colors">Admin <ChevronRight size={14} className="inline ml-1 text-slate-400" /></span>
+                        <div className="relative" ref={profileMenuRef}>
+                            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+                                <div className="w-9 h-9 rounded-full bg-[#6366f1] text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">S</div>
+                                <span className="text-sm font-bold text-slate-700 group-hover:text-black transition-colors">Admin <ChevronRight size={14} className={`inline ml-1 text-slate-400 transition-transform ${showProfileMenu ? 'rotate-90' : ''}`} /></span>
+                            </div>
+
+                            {showProfileMenu && (
+                                <div className="absolute right-0 top-full mt-4 w-52 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-100 py-2 z-50 origin-top-right animate-in fade-in zoom-in-95 duration-200">
+                                    <div className="px-4 py-3 border-b border-slate-50 mb-1">
+                                        <p className="text-sm font-black text-slate-800">Admin User</p>
+                                        <p className="text-xs font-semibold text-slate-500 mt-0.5">admin@mirwebsolutions.com</p>
+                                    </div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full text-left px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors"
+                                    >
+                                        <LogOut size={16} />
+                                        Sign out
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </header>
