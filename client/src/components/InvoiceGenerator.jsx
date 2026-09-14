@@ -58,11 +58,12 @@ const InvoiceGenerator = () => {
 
     const calculateTotals = () => {
         const subtotal = invoice.items.reduce((acc, item) => acc + item.amount, 0);
-        const taxAmount = (subtotal - invoice.discount) * (invoice.taxRate / 100);
-        const total = subtotal - invoice.discount + taxAmount + invoice.shipping;
-        const balanceDue = total - invoice.amountPaid;
+        const discountAmount = subtotal * ((invoice.discount || 0) / 100);
+        const taxAmount = (subtotal - discountAmount) * ((invoice.taxRate || 0) / 100);
+        const total = subtotal - discountAmount + taxAmount + (invoice.shipping || 0);
+        const balanceDue = total - (invoice.amountPaid || 0);
 
-        setInvoice(prev => ({ ...prev, subtotal, taxAmount, total, balanceDue }));
+        setInvoice(prev => ({ ...prev, subtotal, discountAmount, taxAmount, total, balanceDue }));
     };
 
     const handleItemChange = (index, field, value) => {
@@ -306,12 +307,12 @@ const InvoiceGenerator = () => {
                                         <tr className="group">
                                             <td className="py-2 pr-4 text-right flex items-center justify-end gap-1.5 font-medium text-slate-500">
                                                 {!isPreview && <button onClick={() => { setInvoice({ ...invoice, discount: 0 }); setShowDiscount(false) }} className="w-5 h-5 rounded-md text-slate-300 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"><X size={12} /></button>}
-                                                Discount
+                                                Discount ({invoice.discount || 0}%)
                                             </td>
                                             <td className="py-2 text-right">
-                                                {isPreview ? <span className="font-bold text-slate-800">-{currency}{invoice.discount}</span> : (
+                                                {isPreview ? <span className="font-bold text-slate-800">-{currency}{(invoice.discountAmount || 0).toFixed(2)}</span> : (
                                                     <div className="flex justify-end items-center">
-                                                        <span className="text-slate-400 text-sm mr-1">{currency}</span><input type="number" value={invoice.discount} onChange={(e) => setInvoice({ ...invoice, discount: Number(e.target.value) })} className={`w-20 text-right font-bold text-slate-800 ${inputHoverClass}`} />
+                                                        <input type="number" value={invoice.discount} onChange={(e) => setInvoice({ ...invoice, discount: Number(e.target.value) })} className={`w-20 text-right font-bold text-slate-800 ${inputHoverClass}`} /><span className="text-slate-400 font-bold ml-1">%</span>
                                                     </div>
                                                 )}
                                             </td>

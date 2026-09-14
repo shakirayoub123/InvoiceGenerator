@@ -33,20 +33,9 @@ const EnterpriseLayout = ({ children }) => {
     return (
         <div className="flex h-screen bg-[#F8FAFC] overflow-hidden font-sans">
             <aside className="w-64 bg-[#1b253b] flex flex-col z-20 text-white pb-6 relative print:hidden">
-                {/* Abstract design elements matching screenshot */}
-                <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
-
                 <div className="h-28 flex flex-col justify-center items-center px-6 mb-4">
                     <div className="flex flex-col items-center gap-1 text-center">
-                        {appLogo ? (
-                            <img src={appLogo} alt="MIR Systems" className="h-12 max-w-[180px] object-contain invert brightness-0 mb-1" />
-                        ) : (
-                            <div className="flex flex-col items-center mt-4">
-                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"></path></svg>
-                                <span className="font-bold text-lg leading-none tracking-tight">Mir Web Solutions</span>
-                                <span className="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">Your Growth Partner</span>
-                            </div>
-                        )}
+                        <img src="/logo-white-text.svg" alt="Mir Web Solutions" className="w-[180px] mt-2 object-contain drop-shadow-md opacity-90" />
                     </div>
                 </div>
 
@@ -75,7 +64,7 @@ const EnterpriseLayout = ({ children }) => {
                         </button>
                         <div className="flex items-center gap-3 cursor-pointer group" onClick={handleLogout}>
                             <div className="w-9 h-9 rounded-full bg-[#6366f1] text-white flex items-center justify-center font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">S</div>
-                            <span className="text-sm font-bold text-slate-700 group-hover:text-black transition-colors">Shakir <ChevronRight size={14} className="inline ml-1 text-slate-400" /></span>
+                            <span className="text-sm font-bold text-slate-700 group-hover:text-black transition-colors">Admin <ChevronRight size={14} className="inline ml-1 text-slate-400" /></span>
                         </div>
                     </div>
                 </header>

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Trash2, Search, Filter, Eye, FileText, CheckCircle, TrendingUp, Calendar, Download, X, Clock, FilePlus, Users, Package, MoreVertical, Plus } from 'lucide-react';
 import { format, parseISO, startOfMonth, startOfYear, isSameMonth, isSameYear, subMonths, formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const AdminDashboard = () => {
     const [invoices, setInvoices] = useState([]);
@@ -66,12 +66,19 @@ const AdminDashboard = () => {
         };
     });
 
+    const pieChartData = [
+        { name: 'Paid', value: invoices.filter(i => i.amountPaid >= i.total && i.total > 0).length, color: '#10b981' },
+        { name: 'Pending', value: invoices.filter(i => (!i.amountPaid || i.amountPaid < i.total) && new Date(i.dueDate || Date.now()) >= new Date(new Date().setHours(0, 0, 0, 0))).length, color: '#f59e0b' },
+        { name: 'Overdue', value: invoices.filter(i => (!i.amountPaid || i.amountPaid < i.total) && new Date(i.dueDate) < new Date(new Date().setHours(0, 0, 0, 0))).length, color: '#ef4444' }
+    ].filter(item => item.value > 0);
+    if (pieChartData.length === 0) pieChartData.push({ name: 'No Data', value: 1, color: '#cbd5e1' });
+
     return (
         <div className="w-full space-y-8 animate-fade-in pb-10">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">Good Evening, Shakir!</h1>
+                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">Good Evening, Admin!</h1>
                     <p className="text-slate-500 font-medium mt-1">Here's an overview of your invoices and business activity.</p>
                 </div>
                 <div className="text-right flex flex-col items-end">
@@ -146,24 +153,45 @@ const AdminDashboard = () => {
                 <div className="w-full space-y-8">
 
                     {/* Chart Section */}
-                    <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                        <div className="flex justify-between items-center mb-8">
-                            <h3 className="text-lg font-black text-slate-800 tracking-tight">Revenue Overview</h3>
-                            <select className="bg-slate-50 border border-slate-200 text-sm font-bold text-slate-600 px-4 py-2 rounded-lg outline-none cursor-pointer">
-                                <option>Last 6 Months</option>
-                                <option>This Year</option>
-                            </select>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2 bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                            <div className="flex justify-between items-center mb-8">
+                                <h3 className="text-lg font-black text-slate-800 tracking-tight">Revenue Overview</h3>
+                                <select className="bg-slate-50 border border-slate-200 text-sm font-bold text-slate-600 px-4 py-2 rounded-lg outline-none cursor-pointer">
+                                    <option>Last 6 Months</option>
+                                    <option>This Year</option>
+                                </select>
+                            </div>
+                            <div className="h-64 w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={32}>
+                                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: '600' }} dy={10} />
+                                        <YAxis width={80} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: '600' }} tickFormatter={(value) => `${kpiCurrency}${value >= 1000 ? (value / 1000) + 'K' : value}`} />
+                                        <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="3 3" />
+                                        <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', fontWeight: 'bold' }} />
+                                        <Bar dataKey="revenue" fill="#7baafe" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
-                        <div className="h-64 w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={32}>
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: '600' }} dy={10} />
-                                    <YAxis width={80} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b', fontWeight: '600' }} tickFormatter={(value) => `${kpiCurrency}${value >= 1000 ? (value / 1000) + 'K' : value}`} />
-                                    <CartesianGrid vertical={false} stroke="#f1f5f9" strokeDasharray="3 3" />
-                                    <Tooltip cursor={{ fill: '#f8fafc' }} contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', fontWeight: 'bold' }} />
-                                    <Bar dataKey="revenue" fill="#7baafe" radius={[4, 4, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
+
+                        <div className="lg:col-span-1 bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col">
+                            <div className="mb-4">
+                                <h3 className="text-lg font-black text-slate-800 tracking-tight">Status Distribution</h3>
+                            </div>
+                            <div className="h-64 w-full flex-1">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={pieChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={85} paddingAngle={2} dataKey="value" stroke="none">
+                                            {pieChartData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', fontWeight: 'bold', padding: '8px 12px' }} itemStyle={{ color: '#1e293b' }} formatter={(value, name) => [value + ' Invoices', name]} />
+                                        <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', color: '#64748b' }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                     </div>
 

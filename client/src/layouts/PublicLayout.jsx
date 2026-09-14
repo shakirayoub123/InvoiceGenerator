@@ -23,12 +23,7 @@ const PublicLayout = ({ children }) => {
                         {appLogo ? (
                             <img src={appLogo} alt="MIR Systems" className="h-10 max-w-[200px] object-contain" />
                         ) : (
-                            <>
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-blue-500/30">
-                                    <Sparkles size={20} className="text-white" />
-                                </div>
-                                MIR<span className="text-blue-600 font-light relative -left-1">Systems</span>
-                            </>
+                            <img src="/logo.svg" alt="Mir Web Solutions" className="w-[180px] object-contain hover:scale-105 transition-transform" />
                         )}
                     </div>
                     <div className="flex items-center gap-6 text-sm font-bold ml-auto">

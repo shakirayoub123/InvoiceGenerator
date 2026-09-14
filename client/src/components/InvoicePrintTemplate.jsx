@@ -22,7 +22,7 @@ const InvoicePrintTemplate = ({ invoice, currency, templateTheme }) => {
                     </div>
 
                     <div className="mt-8">
-                        <div className="text-[14px] text-slate-400 mb-1">Bill To:</div>
+                        <div className="text-[14px] font-bold text-slate-800 mb-1">Bill To:</div>
                         <div className="text-[13px] font-bold text-slate-800 whitespace-pre-wrap leading-relaxed">
                             {invoice.clientDetails.name + (invoice.clientDetails.address ? '\n' + invoice.clientDetails.address : '')}
                         </div>
@@ -91,19 +91,19 @@ const InvoicePrintTemplate = ({ invoice, currency, templateTheme }) => {
                 <div className="w-1/2 flex flex-col gap-6 pr-8">
                     {invoice.notes && (
                         <div>
-                            <div className="text-[13px] text-slate-400 mb-1">Notes:</div>
+                            <div className="text-[13px] font-bold text-slate-800 mb-1">Notes:</div>
                             <div className="text-[13px] text-slate-800 whitespace-pre-wrap leading-relaxed">{invoice.notes}</div>
                         </div>
                     )}
                     {invoice.terms && (
                         <div>
-                            <div className="text-[13px] text-slate-400 mb-1">Terms:</div>
+                            <div className="text-[13px] font-bold text-slate-800 mb-1">Terms:</div>
                             <div className="text-[13px] text-slate-800 whitespace-pre-wrap leading-relaxed">{invoice.terms}</div>
                         </div>
                     )}
                     {invoice.bankDetails && (
                         <div>
-                            <div className="text-[13px] text-slate-400 mb-1">Bank Details:</div>
+                            <div className="text-[13px] font-bold text-slate-800 mb-1">Bank Details:</div>
                             <div className="text-[13px] font-medium text-slate-800 whitespace-pre-wrap leading-relaxed">{invoice.bankDetails}</div>
                         </div>
                     )}
@@ -118,8 +118,8 @@ const InvoicePrintTemplate = ({ invoice, currency, templateTheme }) => {
                             </tr>
                             {invoice.discount > 0 && (
                                 <tr>
-                                    <td className="py-1.5 text-right text-slate-500 pr-8">Discount:</td>
-                                    <td className="py-1.5 text-right font-medium text-slate-800">-{currency}{Number(invoice.discount).toFixed(2)}</td>
+                                    <td className="py-1.5 text-right text-slate-500 pr-8">Discount ({invoice.discount}%):</td>
+                                    <td className="py-1.5 text-right font-medium text-slate-800">-{currency}{(invoice.discountAmount || 0).toFixed(2)}</td>
                                 </tr>
                             )}
                             {invoice.taxRate > 0 && (

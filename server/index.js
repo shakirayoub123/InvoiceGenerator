@@ -14,9 +14,11 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const invoiceRoutes = require('./routes/invoiceRoutes');
 const settingRoutes = require('./routes/settingRoutes');
 const templateRoutes = require('./routes/templateRoutes');
+const authRoutes = require('./routes/authRoutes');
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/templates', templateRoutes);
+app.use('/api/auth', authRoutes);
 
 // MongoDB connection
 const connectDB = async () => {
