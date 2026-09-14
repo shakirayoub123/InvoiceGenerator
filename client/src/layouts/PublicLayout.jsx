@@ -20,10 +20,8 @@ const PublicLayout = ({ children }) => {
             <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-50 transition-all print:hidden h-20 flex flex-col justify-center">
                 <div className="max-w-[1400px] w-full mx-auto px-6 lg:px-12 flex items-center justify-between">
                     <Link to="/" className="flex items-center" style={{ width: '220px', height: '60px' }}>
-                        {appLogo ? (
+                        {appLogo && (
                             <img src={appLogo} alt="Mir Web Solutions" style={{ height: '100%', width: '100%', objectFit: 'contain', objectPosition: 'left center', display: 'block', transform: 'scale(1.8)', transformOrigin: 'left center' }} />
-                        ) : (
-                            <img src="/White final MWS Logo.png" alt="Mir Web Solutions" style={{ height: '100%', width: '100%', objectFit: 'contain', objectPosition: 'left center', display: 'block', transform: 'scale(1.8)', transformOrigin: 'left center' }} className="drop-shadow-sm opacity-95" />
                         )}
                     </Link>
                     <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm font-extrabold ml-auto">
@@ -49,10 +47,8 @@ const PublicLayout = ({ children }) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 border-t border-slate-800 pt-6 pb-2 text-center lg:text-left">
                         <div className="sm:col-span-2 lg:col-span-2 pr-0 lg:pr-12 flex flex-col items-center lg:items-start">
                             <div className="flex items-center gap-2 mb-4" style={{ height: '40px' }}>
-                                {appLogo ? (
+                                {appLogo && (
                                     <img src={appLogo} alt="Mir Web Solutions" style={{ height: '100%', width: 'auto', maxWidth: '200px', objectFit: 'contain', objectPosition: 'left center', display: 'block', transform: 'scale(1.5)', transformOrigin: 'left center' }} />
-                                ) : (
-                                    <img src="/White final MWS Logo.png" alt="Mir Web Solutions" style={{ height: '100%', width: 'auto', maxWidth: '200px', objectFit: 'contain', objectPosition: 'left center', display: 'block', transform: 'scale(1.5)', transformOrigin: 'left center' }} className="drop-shadow-sm opacity-90" />
                                 )}
                             </div>
                             <p className="text-slate-400 leading-relaxed text-xs mb-6 max-w-[200px] mt-2">

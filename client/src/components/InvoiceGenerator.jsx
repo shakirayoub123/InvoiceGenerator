@@ -3,6 +3,8 @@ import { Plus, X, Trash2, Printer, Save, Eye, EyeOff, Settings2, Palette } from 
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import InvoicePrintTemplate from './InvoicePrintTemplate';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 const InvoiceGenerator = () => {
     const fileInputRef = useRef(null);
@@ -116,9 +118,33 @@ const InvoiceGenerator = () => {
 
     const generatePDF = () => {
         setIsPreviewMode(true);
-        setTimeout(() => {
-            window.print();
-        }, 150);
+        const loadingToast = toast.loading('Generating PDF...');
+        setTimeout(async () => {
+            const input = document.getElementById('pdf-capture-engine');
+            if (input) {
+                try {
+                    const canvas = await html2canvas(input, { scale: 2, useCORS: true });
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
+
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, Math.min(pdfHeight, 297));
+                    pdf.save(`Invoice_${invoice.invoiceNumber}.pdf`);
+                    toast.success('Invoice downloaded successfully!', { id: loadingToast });
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                    toast.error(`Failed to generate PDF: ${error.message || JSON.stringify(error) || 'Unknown error'}`, { id: loadingToast, duration: 6000 });
+                }
+            } else {
+                toast.error('Preview container not found.', { id: loadingToast });
+            }
+        }, 400); // 400ms delay to ensure the DOM is fully rendered before grabbing
     };
 
     const togglePreview = () => setIsPreviewMode(!isPreviewMode);
@@ -382,8 +408,10 @@ const InvoiceGenerator = () => {
                 </div> {/* CLOSES invoice-preview */}
 
                 {/* VISUAL PREVIEW RENDERER */}
-                <div id="print-template-wrapper" className={`w-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-slate-200/80 p-8 sm:p-12 rounded-2xl transition-all ${isPreviewMode ? 'block print:block' : 'hidden print:block'} print:shadow-none print:border-none print:p-0 mb-8`}>
-                    <InvoicePrintTemplate invoice={invoice} currency={currency} templateTheme={selectedTemplate} />
+                <div id="print-template-wrapper" className={`w-full overflow-x-auto bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-slate-200/80 rounded-2xl transition-all ${isPreviewMode ? 'block print:block' : 'hidden print:block'} print:shadow-none print:border-none print:p-0 mb-8 flex justify-center`}>
+                    <div id="pdf-capture-engine" style={{ backgroundColor: '#ffffff', width: '794px', minWidth: '794px', minHeight: '1123px', padding: '40px' }}>
+                        <InvoicePrintTemplate invoice={invoice} currency={currency} templateTheme={selectedTemplate} />
+                    </div>
                 </div>
 
             </div>
