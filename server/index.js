@@ -24,7 +24,7 @@ app.use('/api/clients', clientRoutes);
 
 // MongoDB connection
 const connectDB = async () => {
-    let mongoUri = process.env.MONGODB_URI;
+    let mongoUri = process.env.MONGODB_URI || 'mongodb+srv://miritsolutions_db_user:0LSgKuSGcvNhTHl9@cluster0.bpncrzz.mongodb.net/InvoiceGenerator?retryWrites=true&w=majority&appName=Cluster0';
 
     if (mongoUri) {
         try {
