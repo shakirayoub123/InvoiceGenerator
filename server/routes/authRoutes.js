@@ -5,22 +5,9 @@ const nodemailer = require('nodemailer');
 // Temporary in-memory store for OTPs (For production use Redis or MongoDB)
 const otpStore = new Map();
 
-// Configure Nodemailer with the detailed Gmail SMTP settings
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.SMTP_EMAIL || 'Miritsolutions@gmail.com',
-        pass: process.env.SMTP_PASSWORD || 'rllkbysqrzoyowiz'
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 5000,
-    socketTimeout: 10000,
-    tls: {
-        rejectUnauthorized: false // Helps avoid some local development errors
-    }
-});
+
+
+const dns = require('dns').promises;
 
 router.post('/send-otp', async (req, res) => {
     try {
@@ -35,6 +22,27 @@ router.post('/send-otp', async (req, res) => {
 
         // Store OTP with an expiration of 10 minutes
         otpStore.set(email.toLowerCase(), { otp, expires: Date.now() + 10 * 60 * 1000 });
+
+        // Resolve IPv4 for Gmail strictly to bypass Render IPv6 Blocks
+        const ipv4Addresses = await dns.resolve4('smtp.gmail.com');
+        const smtpHost = ipv4Addresses.length > 0 ? ipv4Addresses[0] : 'smtp.gmail.com';
+
+        // Configure Nodemailer dynamically with the resolved IPv4 Address
+        const transporter = nodemailer.createTransport({
+            host: smtpHost,
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.SMTP_EMAIL || 'Miritsolutions@gmail.com',
+                pass: process.env.SMTP_PASSWORD || 'rllkbysqrzoyowiz'
+            },
+            connectionTimeout: 10000,
+            greetingTimeout: 5000,
+            socketTimeout: 10000,
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
 
         // Send Email
         const mailOptions = {
@@ -54,7 +62,7 @@ router.post('/send-otp', async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-        console.log(`[AUTH] OTP successfully sent to ${email}`);
+        console.log(`[AUTH] OTP successfully sent to ${email} via IPv4 ${smtpHost}`);
         res.json({ success: true, message: 'OTP sent successfully!' });
 
     } catch (error) {
