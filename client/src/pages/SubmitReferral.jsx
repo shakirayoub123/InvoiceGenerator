@@ -50,7 +50,7 @@ const SubmitReferral = () => {
         setLoading(true); setError('');
 
         try {
-            await axios.post('http://localhost:5001/api/clients/refer', formData);
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/clients/refer`, formData);
             setSuccess(true);
             setFormData({ myName: '', myEmail: '', myPhone: '', myCompany: '', myUrl: '', leadName: '', leadEmail: '', leadPhone: '', leadUrl: '', notes: '', extraNotes: '' });
         } catch (err) {

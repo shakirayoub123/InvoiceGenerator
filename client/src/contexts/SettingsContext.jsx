@@ -11,7 +11,7 @@ export const SettingsProvider = ({ children }) => {
 
     useEffect(() => {
         // Fetch global settings on app initialization
-        axios.get('http://localhost:5001/api/settings')
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/settings`)
             .then(res => {
                 if (res.data && res.data.appLogo) {
                     setAppLogo(res.data.appLogo);

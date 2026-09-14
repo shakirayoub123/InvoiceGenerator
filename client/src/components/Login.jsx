@@ -21,7 +21,7 @@ const Login = () => {
         setError('');
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5001/api/auth/send-otp', { email: credentials.email });
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/send-otp`, { email: credentials.email });
             if (res.data.success) {
                 setOtpSent(true);
                 setSuccessMessage('OTP sent to your email!');
@@ -42,13 +42,13 @@ const Login = () => {
         try {
             let res;
             if (loginMode === 'password') {
-                res = await axios.post('http://localhost:5001/api/auth/login', {
+                res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/login`, {
                     email: credentials.email,
                     password: credentials.password.replace(/\s+/g, '') // Tolerance for typed blank spaces
                 });
             } else {
                 if (!otpSent) return;
-                res = await axios.post('http://localhost:5001/api/auth/verify-otp', {
+                res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/verify-otp`, {
                     email: credentials.email,
                     otp: otpCode
                 });

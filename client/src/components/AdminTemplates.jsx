@@ -18,7 +18,7 @@ const AdminTemplates = () => {
 
     const fetchTemplates = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/templates');
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/templates`);
             setTemplates(res.data);
             setLoading(false);
         } catch (err) {
@@ -34,7 +34,7 @@ const AdminTemplates = () => {
     const deleteTemplate = async (id) => {
         if (window.confirm('Deleting this theme template is permanent. Are you sure?')) {
             try {
-                await axios.delete(`http://localhost:5001/api/templates/${id}`);
+                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/templates/${id}`);
                 setTemplates(templates.filter(t => t._id !== id));
                 toast.success('Template deleted successfully!');
             } catch (err) {
@@ -49,7 +49,7 @@ const AdminTemplates = () => {
         if (!newTemplate.name) return toast.error('Template Name is required.');
 
         try {
-            const res = await axios.post('http://localhost:5001/api/templates', newTemplate);
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/templates`, newTemplate);
             setTemplates([res.data, ...templates]);
             setShowCreateModal(false);
             setNewTemplate({ name: '', color: '#3b82f6', layout: 'modern' });

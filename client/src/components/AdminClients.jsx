@@ -16,7 +16,7 @@ const AdminClients = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/clients');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/clients`);
                 setClients(res.data);
             } catch (err) {
                 console.error(err);
@@ -34,7 +34,7 @@ const AdminClients = () => {
                 ref._id === referralId ? { ...ref, status: newStatus } : ref
             );
 
-            await axios.put(`http://localhost:5001/api/clients/${clientId}`, {
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/clients/${clientId}`, {
                 referrals: updatedReferrals
             });
 
@@ -51,7 +51,7 @@ const AdminClients = () => {
             const client = clients.find(c => c._id === clientId);
             const updatedReferrals = client.referrals.filter(ref => ref._id !== referralId);
 
-            await axios.put(`http://localhost:5001/api/clients/${clientId}`, {
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/clients/${clientId}`, {
                 referrals: updatedReferrals
             });
 
@@ -66,7 +66,7 @@ const AdminClients = () => {
     const handleDeleteClient = async (clientId) => {
         if (!window.confirm("Are you sure you want to permanently delete this client and all their referrals?")) return;
         try {
-            await axios.delete(`http://localhost:5001/api/clients/${clientId}`);
+            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/clients/${clientId}`);
             setClients(clients.filter(c => c._id !== clientId));
         } catch (err) {
             console.error('Error deleting client', err);

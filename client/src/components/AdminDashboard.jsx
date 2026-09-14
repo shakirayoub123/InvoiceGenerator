@@ -30,8 +30,8 @@ const AdminDashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 const [invRes, cliRes] = await Promise.all([
-                    axios.get('http://localhost:5001/api/invoices'),
-                    axios.get('http://localhost:5001/api/clients')
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/invoices`),
+                    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/clients`)
                 ]);
                 setInvoices(invRes.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
                 setClients(cliRes.data);

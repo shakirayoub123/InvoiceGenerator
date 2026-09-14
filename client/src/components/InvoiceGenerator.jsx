@@ -50,7 +50,7 @@ const InvoiceGenerator = () => {
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/templates');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/templates`);
                 setTemplates(res.data);
                 if (res.data.length > 0) setSelectedTemplateId(res.data[0]._id);
             } catch (err) { console.error(err); }
@@ -107,7 +107,7 @@ const InvoiceGenerator = () => {
 
     const handleSaveInvoice = () => {
         toast.promise(
-            axios.post('http://localhost:5001/api/invoices', { ...invoice, currency }),
+            axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/invoices`, { ...invoice, currency }),
             {
                 loading: 'Saving...',
                 success: 'Invoice saved to ledger!',

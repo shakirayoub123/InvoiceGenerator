@@ -24,7 +24,7 @@ const AdminSettings = () => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            const res = await axios.put('http://localhost:5001/api/settings', { appLogo: localLogo });
+            const res = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/settings`, { appLogo: localLogo });
             setAppLogo(res.data.appLogo);
             setTimeout(() => {
                 setLoading(false);

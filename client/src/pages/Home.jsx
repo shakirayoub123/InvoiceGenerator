@@ -18,7 +18,7 @@ const Home = () => {
                     Create <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Professional Invoices</span> in Seconds.
                 </h1>
                 <p className="text-slate-500 text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto mb-10">
-                    The fastest, most elegant way to bill your clients. Generate unlimited, high-quality PDF invoices directly from your browser—no sign up required.
+                    The fastest, most elegant way to bill your clients. Generate unlimited, high quality PDF invoices directly from your browser no sign up required.
                 </p>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4">
                     <button onClick={() => { document.querySelector('main').scrollIntoView({ behavior: 'smooth' }) }} className="bg-slate-900 text-white font-bold py-3.5 px-8 rounded-full shadow-lg hover:bg-black transition-all">

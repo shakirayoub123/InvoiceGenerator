@@ -13,7 +13,7 @@ const AdminInvoices = () => {
     useEffect(() => {
         const fetchInvoices = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/invoices');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/invoices`);
                 setInvoices(res.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
                 setLoading(false);
             } catch (err) {
@@ -32,7 +32,7 @@ const AdminInvoices = () => {
                     <button onClick={async () => {
                         toast.dismiss(t.id);
                         try {
-                            const promise = axios.delete(`http://localhost:5001/api/invoices/${id}`);
+                            const promise = axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/invoices/${id}`);
                             toast.promise(promise, { loading: 'Deleting...', success: 'Invoice deleted', error: 'Failed to delete' });
                             await promise;
                             setInvoices(invoices.filter(i => i._id !== id));
@@ -58,7 +58,7 @@ const AdminInvoices = () => {
                         toast.dismiss(t.id);
                         try {
                             const payload = { ...invoice, status: 'Paid', amountPaid: invoice.total, balanceDue: 0 };
-                            const promise = axios.put(`http://localhost:5001/api/invoices/${invoice._id}`, payload);
+                            const promise = axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/invoices/${invoice._id}`, payload);
                             toast.promise(promise, { loading: 'Updating...', success: 'Target invoice paid', error: 'Database update failed' });
                             const res = await promise;
                             setInvoices(invoices.map(inv => inv._id === invoice._id ? res.data : inv));
